@@ -9,7 +9,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import {initialSession} from "@/types/initialStates"
+import { initialSession } from "@/types/initialStates";
 
 export default function Nav() {
   const router = useRouter();
@@ -56,6 +56,16 @@ export default function Nav() {
     localStorage.removeItem("session");
     router.push("/");
   };
+
+  // const [localSession, setLocalSession] = useState<string | null>(null);
+  // useEffect(() => {
+  //   setLocalSession(localStorage.getItem("session"));
+  //   if (session.token === "") {
+  //     if (localSession) {
+  //       setSession(JSON.parse(localSession));
+  //     }
+  //   }
+  // }, [localSession]);
 
   return (
     <Disclosure
@@ -105,9 +115,10 @@ export default function Nav() {
                           "rounded-md px-3 py-2 text-sm font-medium"
                         )}
                         hidden={
-                          session.user.role===""?true:
-                          item.role.includes(session.user.role) ||
-                          item.role.includes("ALL")
+                          session.user.role === ""
+                            ? true
+                            : item.role.includes(session.user.role) ||
+                              item.role.includes("ALL")
                             ? false
                             : true
                         }
@@ -117,6 +128,8 @@ export default function Nav() {
                         {item.name}
                       </Link>
                     ))}
+
+                    
                   </div>
                 </div>
               </div>
@@ -138,8 +151,7 @@ export default function Nav() {
                       <div>
                         <Menu.Button className="relative flex">
                           <span className="flex w-full justify-center rounded-md bg-blue-700 px-3 py-1.5 text-sm font-semibold  text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {session.user.name}
-
+                            {session.user.name} {session.user.lastname}
                             <ChevronDownIcon
                               className="ml-2 h-5 w-5 text-white"
                               aria-hidden="true"

@@ -1,15 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   XMarkIcon,
-  CalendarDaysIcon,
-  IdentificationIcon,
 } from "@heroicons/react/24/outline";
 import { Reservation, Office, ReservationState } from "../types/types";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { evalReservation } from "../services/reservations.service";
 
 export default function ReservationOverlay({
@@ -23,8 +19,6 @@ export default function ReservationOverlay({
   open: boolean;
   updateParent: () => void;
 }) {
-  const [userRole, setUserRole] = useState<string>("");
-  const router = useRouter();
 
   const [currentReservation, setCurrentReservation] =
     useState<Reservation>(reservation);
@@ -75,9 +69,7 @@ export default function ReservationOverlay({
 
   useEffect(() => {
     setCurrentReservation(reservation);
-    const sotredUserRole = localStorage.getItem("userRole");
-    sotredUserRole ? setUserRole(sotredUserRole) : router.push("/");
-  }, [reservation, router]);
+  }, [reservation]);
 
   return (
     <Transition show={open}>

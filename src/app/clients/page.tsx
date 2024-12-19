@@ -8,10 +8,11 @@ import { getPropertyIndex } from "@/utils/getPropertyIndex";
 import { Client } from "@/types/types";
 import NewClientModal from "@/components/NewClientModal";
 import Table from "@/components/Table";
+import { useLoginContext } from "@/context/loginContext";
 
 export default function Clients() {
   const router = useRouter();
-
+  const { session } = useLoginContext();
   const [loading, setLoading] = useState<boolean>(true);
 
   const [clients, setClients] = useState<Client[]>([]);
@@ -85,14 +86,13 @@ export default function Clients() {
   };
 
   useEffect(() => {
-    const storedUserRole = localStorage.getItem("userRole");
-    if (
-      storedUserRole !== "SUPER_ADMIN" &&
-      storedUserRole !== "ADMIN" &&
-      storedUserRole !== "DEV"
-    ) {
-      router.push("/");
-    } else handleClients();
+    const role = session.user.role;
+    role === "SUPER_ADMIN" ||
+    role === "ADMIN" ||
+    role === "DEV" ||
+    role === "EXTERNO"
+      ? handleClients()
+      : router.push("/");
   }, [router]);
 
   if (loading) return <Loading loading={loading} />;

@@ -11,9 +11,8 @@ import {
   Reservation,
   ReservationState,
   Office,
-  Client,
   SelectValue,
-  User
+  User,
 } from "@/types/types";
 import Table from "@/components/Table";
 import NewReservationModal from "@/components/NewReservationModal";
@@ -21,48 +20,17 @@ import ReservationOverlay from "@/components/ReservationOverlay";
 import Select from "react-tailwindcss-select";
 import Calendar from "@/components/CalendarView";
 import CardsView from "@/components/CardsView";
+import { useLoginContext } from "@/context/loginContext";
 
 export default function Reservations() {
-  // RESERVATIONS
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const handleReservations = async () => {
-    try {
-      const data = await getReservations();
-
-      const dynamicHeaders = [
-        { head: "Fecha", location: getPropertyIndex(data[0], "date") },
-        {
-          head: "Hora inicio",
-          location: getPropertyIndex(data[0], "startTime"),
-        },
-        { head: "hora fin", location: getPropertyIndex(data[0], "endTime") },
-        { head: "Sala", location: getPropertyIndex(data[0], "office") },
-        { head: "Estado", location: getPropertyIndex(data[0], "state") },
-      ];
-      setHeaders(dynamicHeaders);
-
-      const ThInRow = [
-        { head: "Reserva", location: getPropertyIndex(data[0], "name") },
-      ];
-      setTnInRowHeaders(ThInRow);
-
-      data.sort((a, b) => a.name.localeCompare(b.name));
-      setReservations(data);
-      setLoading(false);
-    } catch (error) {
-      throw new Error();
-    }
-  };
-
   // CLIENTS
-  const [clients, setClients] = useState<Client[]>([]);
   const [formattedClients, setFormattedClients] = useState<
     { value: string; label: string }[]
   >([]);
+
   const handleClients = async () => {
     try {
       const data = await getClients();
-      setClients(data);
       const formattedClients = data.map((client) => ({
         value: client.id,
         label: `${client.name} ${client.lastname}`,
@@ -74,51 +42,77 @@ export default function Reservations() {
   };
 
   // USERS
-  const [users, setusers] = useState<User[]>([])
-  const [formattedUsers, setFormattedUsers] = useState<{value: string; label: string}[]>([])
-  const handleUsers = async ()=>{
+  const [formattedUsers, setFormattedUsers] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const handleUsers = async () => {
     try {
-      const data = await getExternos()
-      setusers(data)
-      const formattedUsers = data.map((user)=>({value: user.id,label:`${user.name} n${user.lastname}`}))
-      setFormattedUsers(formattedUsers)
+      const data = await getExternos();
+      const formattedUsers = data.map((user) => ({
+        value: user.id,
+        label: `${user.name} ${user.lastname}`,
+      }));
+      setFormattedUsers(formattedUsers);
     } catch (error) {
-      throw new Error
+      throw new Error();
     }
-  }
+  };
 
+  // RESERVATIONS
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const handleReservations = async () => {
+    try {
+      const data = await getReservations(session.user.role);
+      const anyReservation = data[0];
+      const dynamicHeaders = [
+        { head: "Fecha", location: getPropertyIndex(anyReservation, "date") },
+        {
+          head: "Hora inicio",
+          location: getPropertyIndex(anyReservation, "startTime"),
+        },
+        {
+          head: "hora fin",
+          location: getPropertyIndex(anyReservation, "endTime"),
+        },
+        { head: "Sala", location: getPropertyIndex(anyReservation, "office") },
+        { head: "Estado", location: getPropertyIndex(anyReservation, "state") },
+      ];
+      setHeaders(dynamicHeaders);
+
+      const ThInRow = [
+        { head: "Reserva", location: getPropertyIndex(anyReservation, "name") },
+      ];
+      setThInRowHeaders(ThInRow);
+
+      data.sort((a, b) => a.name.localeCompare(b.name));
+      setReservations(data);
+      
+      setLoading(false);
+    } catch (error) {
+      throw new Error();
+    }
+  };
+
+  // VISTAS
   const [view, setView] = useState<string>("Tarjetas");
-  const viewOptions: string[] = ["Tabla", "Calendario", "Tarjetas", "Agenda"];
+  const viewOptions: string[] = ["Tabla", "Tarjetas"];
 
   const handleView = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setView(event.target.value as string);
-  };
-
-  const initialReservationState: Reservation = {
-    id: "",
-    name: "",
-    date: "",
-    startTime: "",
-    endTime: "",
-    office: "",
-    implementos: "",
-    state: ReservationState.EVALUACION,
-    observation: "",
-    clients: [],
-    users: [],
   };
 
   // VIEW PROPS
   const [headers, setHeaders] = useState<
     { head: string; location: number | undefined }[]
   >([]);
-  const [thInRowHeaders, setTnInRowHeaders] = useState<
+  const [thInRowHeaders, setThInRowHeaders] = useState<
     {
       head: string;
       location: number | undefined;
     }[]
   >([]);
 
+  // HANDLE EDIT
   const handleEdit = (reservation: Reservation) => {
     if (reservation) {
       setShowReservationOverlay(true);
@@ -138,6 +132,19 @@ export default function Reservations() {
   };
 
   // RESERVATION OVERLAY PROPS
+  const initialReservationState: Reservation = {
+    id: "",
+    name: "",
+    date: "",
+    startTime: "",
+    endTime: "",
+    office: "",
+    implementos: "",
+    state: ReservationState.EVALUACION,
+    observation: "",
+    clients: [],
+    users: [],
+  };
   const [selectedReservation, setSelectedReservation] = useState<Reservation>(
     initialReservationState
   );
@@ -154,16 +161,19 @@ export default function Reservations() {
   const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<string>("all");
   const [selectedState, setSelectedState] = useState<string>("Evaluación");
-  const [selectedUsers, setSelectedUsers] = useState<{ value: string; label: string }[]>([]);
-  const handleSelectedUsers = (value: SelectValue | SelectValue[] | null)=>{
-    if (Array.isArray(value)){
-      setSelectedUsers(value)
-    } else if (value){
-      setSelectedUsers([value])
+  const [selectedUsers, setSelectedUsers] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const handleSelectedUsers = (value: SelectValue | SelectValue[] | null) => {
+    if (Array.isArray(value)) {
+      setSelectedUsers(value);
+    } else if (value) {
+      setSelectedUsers([value]);
     } else {
-      setSelectedUsers([])
+      setSelectedUsers([]);
     }
-  }
+    console.log(selectedUsers);
+  };
 
   const [selectedClients, setSelectedClients] = useState<
     { value: string; label: string }[]
@@ -211,15 +221,15 @@ export default function Reservations() {
     }
 
     // Filtro por usuarios (verifica si algún usuario coincide)
-    // if (selectedUsers.length > 0) {
-    //   const userFullNames = reservation.users.map(
-    //     (user) => `${user.name} ${user.lastname}`
-    //   );
-    //   const hasMatchingUser = selectedUsers.some((selectedUser) =>
-    //     userFullNames.includes(selectedUser)
-    //   );
-    //   if (!hasMatchingUser) return false;
-    // }
+    if (selectedUsers.length > 0) {
+      const userFullNames = reservation.users.map(
+        (user) => `${user.name} ${user.lastname}`
+      );
+      const hasMatchingUser = selectedUsers.some((selectedUser) =>
+        userFullNames.includes(selectedUser.label)
+      );
+      if (!hasMatchingUser) return false;
+    }
 
     // Filtro por clientes (verifica si algún cliente coincide)
     if (selectedClients.length > 0) {
@@ -235,32 +245,37 @@ export default function Reservations() {
     return true; // Si pasa todos los filtros, se incluye la reserva
   });
 
+  const { session } = useLoginContext();
   const [loading, setLoading] = useState<boolean>(true);
-
   const router = useRouter();
+
   useEffect(() => {
-    const storedUserRole = localStorage.getItem("userRole");
+    const role = session.user.role;
     if (
-      storedUserRole !== "SUPER_ADMIN" &&
-      storedUserRole !== "ADMIN" &&
-      storedUserRole !== "DEV"
+      role === "SUPER_ADMIN" ||
+      role === "ADMIN" ||
+      role === "DEV" ||
+      role === "EXTERNO"
     ) {
-      router.push("/");
-    } else {
-      handleUsers()
       handleClients();
+      handleUsers();
       handleReservations();
+    } else {
+      router.push("/");
     }
   }, [router]);
 
+  console.log(session);
+  
   if (loading) return <Loading loading={loading} />;
 
   return (
     <div>
-      <div className="grid grid-cols-8">
+      {/* FILTROS */}
+      <div className="m-8 grid grid-cols-8 gap-6">
         <div className="col-span-1">
           <button
-            className="mt-6 w-11/12 h-10 rounded-md bg-blue-700 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="mt-6 w-full md:w-5/6 h-10 rounded-md bg-blue-700 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={openNewReservationModal}
           >
             Crear Reserva
@@ -272,7 +287,7 @@ export default function Reservations() {
           </label>
           <input
             type="date"
-            className="block rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
             value={selectedStartDate || ""}
             onChange={(e) => setSelectedStartDate(e.target.value)}
           />
@@ -283,7 +298,7 @@ export default function Reservations() {
           </label>
           <input
             type="date"
-            className="block rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
             value={selectedEndDate || ""}
             onChange={(e) => setSelectedEndDate(e.target.value)}
           />
@@ -293,11 +308,11 @@ export default function Reservations() {
             Sala
           </label>
           <select
-            className="block w-auto rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+            className="block w-full w-auto rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
             value={selectedOffice}
             onChange={(e) => setSelectedOffice(e.target.value)}
           >
-            <option value="all">Todas las salas</option>
+            <option value="all">Todas</option>
             {Object.values(Office).map((office, index) => (
               <option key={index} value={office}>
                 {office}
@@ -310,11 +325,11 @@ export default function Reservations() {
             Estado
           </label>
           <select
-            className="block w-auto rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
           >
-            <option value="all">Todos los estados</option>
+            <option value="all">Todos</option>
             {Object.values(ReservationState).map((value, index) => (
               <option key={index} value={value}>
                 {value}
@@ -334,7 +349,7 @@ export default function Reservations() {
             primaryColor="blue"
             isSearchable={true}
             classNames={{
-              menu: "absolute z-30 w-full bg-white overflow-y-auto scrollbar-hide rounded-md ring-1 ring-inset border-0 px-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6",
+              menu: "absolute w-full bg-white rounded-md ring-1 ring-inset border-0 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6",
             }}
           />
         </div>
@@ -350,7 +365,8 @@ export default function Reservations() {
             primaryColor="blue"
             isSearchable={true}
             classNames={{
-              menu: "absolute z-30 w-full bg-white overflow-y-auto scrollbar-hide rounded-md ring-1 ring-inset border-0 px-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6",
+              searchContainer: "block",
+              menu: "absolute w-full bg-white overflow-y-auto scrollbar-hide rounded-md ring-1 ring-inset border-0 px-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6",
             }}
           />
         </div>
@@ -361,7 +377,7 @@ export default function Reservations() {
           <select
             value={view}
             onChange={handleView}
-            className=" w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-7"
+            className="block w-auto rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
           >
             {viewOptions.map((view) => {
               return (
@@ -373,6 +389,8 @@ export default function Reservations() {
           </select>
         </div>
       </div>
+
+      {/* RESERVAS */}
       {(() => {
         switch (view) {
           case "Tabla":

@@ -8,7 +8,6 @@ import { useLoginContext } from "@/context/loginContext";
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
-  const { session, setSession } = useLoginContext();
 
   useEffect(() => {
     setTimeout(() => {

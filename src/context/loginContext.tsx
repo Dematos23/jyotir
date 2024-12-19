@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { Session, LoginContextProviderProps } from "@/types/types";
 import {initialSession} from "@/types/initialStates"
+import { setTokenInterceptor } from "@/services/api/backend.api";
 
 interface LoginContext {
   session: Session;
@@ -13,6 +14,11 @@ export const LoginContext = createContext<LoginContext | null>(null);
 
 export default function LoginContextProvider({children}: LoginContextProviderProps) {
   const [session, setSession] = useState<Session>(initialSession);
+
+  useEffect(()=>{
+    setTokenInterceptor(()=>session.token)
+  },[session])
+
   return (
     <LoginContext.Provider
       value={{

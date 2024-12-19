@@ -11,6 +11,7 @@ import NewPasswordOverlay from "@/components/NewPasswordOverlay";
 import { User, NewUser } from "../../types/types";
 import { getPropertyIndex } from "../../utils/getPropertyIndex";
 import Table from "@/components/Table";
+import { useLoginContext } from "@/context/loginContext";
 
 export default function Users() {
   const initialUserState: NewUser = {
@@ -24,6 +25,7 @@ export default function Users() {
     password: "",
   };
 
+  const { session } = useLoginContext();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
@@ -129,10 +131,8 @@ export default function Users() {
     setShowOverlay(false);
   };
   useEffect(() => {
-    const storedUserRole = localStorage.getItem("userRole");
-    if (storedUserRole !== "SUPER_ADMIN" && storedUserRole !== "DEV") {
-      router.push("/");
-    } else handleUsers();
+    const role = session.user.role;
+    role === "SUPER_ADMIN" || role === "DEV" ? handleUsers() : router.push("/");
   }, [router]);
 
   if (loading) return <Loading loading={loading} />;

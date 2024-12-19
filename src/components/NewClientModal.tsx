@@ -26,14 +26,24 @@ export default function NewClientModal({
     onClose();
   };
 
-  const initialClientState: Client = {
-    id: "",
+  const initialClientState: Partial<Client> = {
     name: "",
     lastname: "",
     dni: "",
     email: "",
+    phone: "",
   };
-  const [newClient, setNewClient] = useState<Client>(initialClientState);
+
+  const [newClient, setNewClient] =
+    useState<Partial<Client>>(initialClientState);
+
+  const payload: Partial<Client> = {
+    name: newClient.name,
+    lastname: newClient.lastname,
+    dni: newClient.dni,
+    email: newClient.email,
+    phone: newClient.phone,
+  };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newName = event.target.value;
@@ -47,17 +57,25 @@ export default function NewClientModal({
       setNewClient({ ...newClient, lastname: newLastname });
     }
   };
+  const handleDniChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const dni = event.target.value;
+    if (newClient) {
+      setNewClient({ ...newClient, dni: dni });
+    }
+  };
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
     if (newClient) {
       setNewClient({ ...newClient, email: newEmail });
     }
   };
-  const handleDniChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const dni = event.target.value;
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newPhone = event.target.value;
     if (newClient) {
-      setNewClient({ ...newClient, dni: dni });
+      setNewClient({ ...newClient, phone: newPhone });
     }
+    console.log(newClient);
+    console.log(payload);
   };
 
   const handleSubmit = async (
@@ -67,13 +85,6 @@ export default function NewClientModal({
       e.preventDefault();
       return;
     }
-
-    const payload: Partial<Client> = {
-      name: newClient.name,
-      lastname: newClient.lastname,
-      dni: newClient.dni,
-      email: newClient.email
-    };
 
     const createdClient = await postClient(payload);
     updateParent();
@@ -155,20 +166,21 @@ export default function NewClientModal({
                             </div>
                           </div>
                           <div className="mt-5 grid gap-x-6 gap-y-8 sm:grid-cols-6">
-                            {/* EMAIL */}
+                            {/* DNI */}
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium leading-6 text-gray-900">
                                 Dni
                               </label>
                               <div className="mt-2">
                                 <input
-                                  placeholder="text"
-                                  type="email"
+                                  placeholder="Dni"
+                                  type="text"
                                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   onChange={handleDniChange}
                                 />
                               </div>
                             </div>
+                            {/* EMAIL */}
                             <div className="sm:col-span-3">
                               <label className="block text-sm font-medium leading-6 text-gray-900">
                                 Email
@@ -179,6 +191,22 @@ export default function NewClientModal({
                                   type="email"
                                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   onChange={handleEmailChange}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-5 grid gap-x-6 gap-y-8 sm:grid-cols-6">
+                            {/* PHONE */}
+                            <div className="sm:col-span-3">
+                              <label className="block text-sm font-medium leading-6 text-gray-900">
+                                Teléfono
+                              </label>
+                              <div className="mt-2">
+                                <input
+                                  placeholder="Teléfono"
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                  onChange={handlePhoneChange}
                                 />
                               </div>
                             </div>

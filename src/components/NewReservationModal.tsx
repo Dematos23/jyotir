@@ -126,7 +126,7 @@ export default function NewReservationModal({
 
     const createdReservation = await postReservation(payload);
     updateParent();
-    storeNewReservation(createdReservation);
+    // storeNewReservation(createdReservation);
     setSelectedExternos([]);
     setSelectedOption([]);
     setSelectValue("Select");

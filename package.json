@@ -1,5 +1,5 @@
 {
-  "name": "reserva-espacios",
+  "name": "jyotir",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,21 +10,20 @@
     "server": "node"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/react": "^6.1.15",
-    "@fullcalendar/resource": "^6.1.15",
-    "@fullcalendar/resource-timegrid": "^6.1.15",
+    "@clerk/elements": "^0.22.4",
+    "@clerk/nextjs": "^6.9.5",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
-    "axios": "^1.6.8",
+    "@preline/select": "^2.6.0",
+    "@prisma/client": "^6.1.0",
     "dotenv": "^16.4.5",
     "flowbite": "^2.3.0",
-    "fullcalendar": "^6.1.15",
     "next": "^14.2.13",
+    "preline": "^2.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-tailwindcss-select": "^1.8.5",
+    "svix": "^1.44.0",
     "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
