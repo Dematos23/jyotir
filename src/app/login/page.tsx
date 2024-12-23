@@ -3,31 +3,66 @@
 import Image from "../../../node_modules/next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import Overlay from "../../components/Overlay";
-import { useLoginContext } from "@/context/loginContext";
-import { serviceLogin } from "@/services/auth.service";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const { setSession } = useAuth();
   const router = useRouter();
-  const { session, setSession } = useLoginContext();
 
   const handleLogin = async (event: React.MouseEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const res = await serviceLogin(email, password);
-    setSession(res.data);
-    localStorage.setItem("session", JSON.stringify(res.data));
-    router.push("/");
+    setLoginError("");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoginError(data.error || "Error desconocido al inciar sesión");
+        openWrongPasswordModal();
+        return;
+      }
+      setSession(data);
+
+      // router.push("/");
+    } catch (error) {
+      setLoginError("Error al conectar con el servidor. Intenta nuevamente.");
+      openWrongPasswordModal();
+    }
   };
 
-  const [showModal, setShowModal] = useState(false);
+  // FORGOT PASSWORD MODAL
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const handleForgotPasswordClick = () => {
-    setShowModal(true);
+    setShowForgotPasswordModal(true);
   };
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const closeForgotModal = () => {
+    setShowForgotPasswordModal(false);
   };
+  const forgotPasswordModalTitle = "¿Olvidaste tu contraseña?";
+  const forgotPasswordModalBody =
+    "Ponte contacto con el administrador para restablecer tu contraseña.";
+
+  // WRONG PASSWORD MODAL
+  const [showWrongPasswordModal, setShowWrongPasswordModal] = useState(false);
+  const openWrongPasswordModal = () => {
+    setShowWrongPasswordModal(true);
+  };
+  const closeWronPasswordModal = () => {
+    setShowWrongPasswordModal(false);
+  };
+  const wrongPasswordModalTitle = "Error al iniciar sesión";
 
   return (
     <>
@@ -109,8 +144,19 @@ export default function Login() {
               </button>
             </div>
           </form>
-          <Overlay open={showModal} onClose={handleCloseModal} />
         </div>
+        <Overlay
+          open={showForgotPasswordModal}
+          onClose={closeForgotModal}
+          title={forgotPasswordModalTitle}
+          body={forgotPasswordModalBody}
+        />
+        <Overlay
+          open={showWrongPasswordModal}
+          onClose={closeWronPasswordModal}
+          title={wrongPasswordModalTitle}
+          body={loginError}
+        />
       </div>
     </>
   );

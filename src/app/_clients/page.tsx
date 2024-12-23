@@ -8,7 +8,7 @@ import { getPropertyIndex } from "@/utils/getPropertyIndex";
 import { Client } from "@/types/types";
 import NewClientModal from "@/components/NewClientModal";
 import Table from "@/components/Table";
-import { useLoginContext } from "@/context/loginContext";
+import { useLoginContext } from "@/context/AuthContext";
 
 export default function Clients() {
   const router = useRouter();

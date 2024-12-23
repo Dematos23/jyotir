@@ -4,7 +4,7 @@ import Image from "../../node_modules/next/image";
 // import Link from "../../node_modules/next/link";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
-import { useLoginContext } from "@/context/loginContext";
+import { useLoginContext } from "@/context/AuthContext";
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);

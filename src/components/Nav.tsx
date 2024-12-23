@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useLoginContext } from "@/context/loginContext";
+import { useAuth } from "@/context/AuthContext";
+
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -13,7 +14,7 @@ import { initialSession } from "@/types/initialStates";
 
 export default function Nav() {
   const router = useRouter();
-  const { session, setSession } = useLoginContext();
+  const { session, setSession } = useAuth();
 
   const [navigation, setNavigation] = useState([
     { name: "Inicio", href: "/", role: ["ALL"], current: false },
@@ -53,7 +54,6 @@ export default function Nav() {
 
   const handleLogout = () => {
     setSession(initialSession);
-    localStorage.removeItem("session");
     router.push("/");
   };
 
@@ -115,7 +115,7 @@ export default function Nav() {
                           "rounded-md px-3 py-2 text-sm font-medium"
                         )}
                         hidden={
-                          session.user.role === ""
+                          session?.user.role === ""
                             ? true
                             : item.role.includes(session.user.role) ||
                               item.role.includes("ALL")
@@ -128,8 +128,6 @@ export default function Nav() {
                         {item.name}
                       </Link>
                     ))}
-
-                    
                   </div>
                 </div>
               </div>

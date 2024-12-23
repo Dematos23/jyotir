@@ -1,0 +1,30 @@
+[
+    {
+      "name": "Ricardo",
+      "lastname": "Arjona",
+      "dni": "11223344",
+      "email": "ricardo.arjona@gmail.com",
+      "phone": "111222333",
+      "emergencyContact": "Sussy Diaz",
+      "district": "Miraflores"
+      },
+    {
+      "name": "Lady",
+      "lastname": "Gaga",
+      "dni": "22334455",
+      "email": "lady.gaga@gmail.com",
+      "phone": "222333444",
+      "emergencyContact": "Bradley Cooper",
+      "district": "Barranco"
+      },
+    {
+      "name": "Dua",
+      "lastname": "Lipa",
+      "dni": "33445566",
+      "email": "dua.lipa@gmail.com",
+      "phone": "333444555",
+      "emergencyContact": "Anesa Lipa",
+      "district": "San Isidro"
+      }
+  ]
+  

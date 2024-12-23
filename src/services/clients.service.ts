@@ -1,22 +1,89 @@
-import { Client } from "../types/types";
-import { backendApi } from "./api/backend.api";
+const prisma = require("../utils/prisma");
+const findUser = require("../utils/findUser");
 
-const getClients = async (): Promise<Client[]> => {
-  try {
-    const res = await backendApi.get<Client[]>("/clients");
-    return res.data;
-  } catch (error) {
-    throw new Error();
+class ClientsService {
+  static async post(body) {
+    const client = await prisma.clients.create({
+      data: {
+        name: body.name,
+        lastname: body.lastname,
+        dni: body.dni,
+        email: body.email,
+        phone: body.phone,
+        emergencyContact: body.emergencyContact,
+        district: body.district,
+      },
+      select: {
+        id: true,
+
+        name: true,
+        lastname: true,
+        dni: true,
+        email: true,
+        phone: true,
+        emergencyContact: true,
+        district: true,
+      },
+    });
+
+    return client;
   }
-};
 
-const postClient = async (payload: Partial<Client>): Promise<Client> => {
-  try {
-    const res = await backendApi.post<Client>("/clients", payload);
-    return res.data;
-  } catch (error) {
-    throw new Error();
+  static async get() {
+    return await prisma.clients.findMany({
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        dni: true,
+        email: true,
+        phone: true,
+        // emergencyContact: true,
+        district: true,
+      },
+    });
+
+    return await prisma.users.findMany({
+      where: {
+        OR: [{ role: "ADMIN" }, { role: "EXTERNO" }, { role: "SUPER_ADMIN" }],
+      },
+      select: {
+        email: true,
+        name: true,
+        lastname: true,
+        spiritualName: true,
+        role: true,
+        state: true,
+      },
+    });
   }
-};
 
-export { getClients, postClient };
+  static async put(body) {
+    const client = await prisma.clients.update({
+      where: { id: body.clientId },
+      data: {
+        name: body.name,
+        lastname: body.lastname,
+        dni: body.dni,
+        email: body.email,
+        phone: body.phone,
+        emergencyContact: body.emergencyContact,
+        district: body.district,
+      },
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        dni: true,
+        email: true,
+        phone: true,
+        emergencyContact: true,
+        district: true,
+      },
+    });
+
+    return client;
+  }
+}
+
+module.exports = ClientsService;

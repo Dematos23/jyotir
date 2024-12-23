@@ -5,4 +5,4 @@ function getPropertyIndex<JsonObject>(obj: object, propertyName: string): number
   return keys.indexOf(propertyName);
 }
 
-export { getPropertyIndex };
+export { getPropertyIndex};

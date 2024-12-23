@@ -11,7 +11,7 @@ import NewPasswordOverlay from "@/components/NewPasswordOverlay";
 import { User, NewUser } from "../../types/types";
 import { getPropertyIndex } from "../../utils/getPropertyIndex";
 import Table from "@/components/Table";
-import { useLoginContext } from "@/context/loginContext";
+import { useLoginContext } from "@/context/AuthContext";
 
 export default function Users() {
   const initialUserState: NewUser = {

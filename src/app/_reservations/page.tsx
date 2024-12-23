@@ -20,7 +20,7 @@ import ReservationOverlay from "@/components/ReservationOverlay";
 import Select from "react-tailwindcss-select";
 import Calendar from "@/components/CalendarView";
 import CardsView from "@/components/CardsView";
-import { useLoginContext } from "@/context/loginContext";
+import { useLoginContext } from "@/context/AuthContext";
 
 export default function Reservations() {
   // CLIENTS
@@ -86,7 +86,7 @@ export default function Reservations() {
 
       data.sort((a, b) => a.name.localeCompare(b.name));
       setReservations(data);
-      
+
       setLoading(false);
     } catch (error) {
       throw new Error();
@@ -266,7 +266,7 @@ export default function Reservations() {
   }, [router]);
 
   console.log(session);
-  
+
   if (loading) return <Loading loading={loading} />;
 
   return (
