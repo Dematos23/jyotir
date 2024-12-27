@@ -2,48 +2,24 @@
 
 import { useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  UserCircleIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
 import { Client } from "@/types/types";
-import { postClient } from "@/services/clients.service";
+import { initialClientState } from "@/types/initialStates";
 export default function NewClientModal({
   onClose,
   open,
   updateParent,
-  //   onSuccess,
-  storeNewClient,
 }: {
   onClose: () => void;
   open: boolean;
   updateParent: () => void;
-  //   onSuccess: () => void;
-  storeNewClient: (newClient: Client) => void;
 }) {
-  const onCancel = () => {
+  const onSuccess = () => {
     updateParent();
     onClose();
   };
 
-  const initialClientState: Partial<Client> = {
-    name: "",
-    lastname: "",
-    dni: "",
-    email: "",
-    phone: "",
-  };
-
   const [newClient, setNewClient] =
     useState<Partial<Client>>(initialClientState);
-
-  const payload: Partial<Client> = {
-    name: newClient.name,
-    lastname: newClient.lastname,
-    dni: newClient.dni,
-    email: newClient.email,
-    phone: newClient.phone,
-  };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newName = event.target.value;
@@ -74,8 +50,6 @@ export default function NewClientModal({
     if (newClient) {
       setNewClient({ ...newClient, phone: newPhone });
     }
-    console.log(newClient);
-    console.log(payload);
   };
 
   const handleSubmit = async (
@@ -85,18 +59,30 @@ export default function NewClientModal({
       e.preventDefault();
       return;
     }
+    try {
+      const res = await fetch("/api/clients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newClient),
+      });
 
-    const createdClient = await postClient(payload);
-    updateParent();
-    storeNewClient(createdClient);
-    onClose();
-    //   onSuccess();
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log(data.error || "Error desconocido al crear cliente");
+      }
+      onSuccess();
+    } catch (error) {
+      throw new Error("Error al crear cliente. Intenta nuevamente.");
+    }
   };
 
   return (
     <Transition show={open}>
       {/* <Dialog.Overlay className="fixed inset-0 z-40 bg-black bg-opacity-75" /> */}
-      <Dialog open={open} onClose={onCancel} className="relative z-10">
+      <Dialog open={open} onClose={onClose} className="relative z-10">
         <Transition.Child
           enter="transition-opacity ease-linear duration-300"
           enterFrom="opacity-0"
@@ -221,7 +207,7 @@ export default function NewClientModal({
                   <button
                     type="button"
                     data-autofocus
-                    onClick={onCancel}
+                    onClick={onClose}
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
                     Cancelar

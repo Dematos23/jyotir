@@ -9,6 +9,7 @@ import {
 } from "react";
 import { Session } from "@/types/types";
 import { initialSession } from "@/types/initialStates";
+import { AuthActions } from "@/actions/auth.actions";
 
 interface AuthContextProps {
   session: Session;
@@ -19,7 +20,6 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session>(initialSession);
-
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -39,6 +39,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     fetchSession();
+    // const user = AuthData.validateToken();
+    // user ? setSession(user) throw new Error("Sin token");
+    
   }, []);
 
   return (

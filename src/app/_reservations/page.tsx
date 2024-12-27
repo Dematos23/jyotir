@@ -4,7 +4,7 @@ import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getReservations } from "@/services/reservations.service";
-import { getClients } from "@/services/clients.service";
+import { getClients } from "@/services/client.service";
 import { getExternos } from "@/services/users.service";
 import { getPropertyIndex } from "@/utils/getPropertyIndex";
 import {

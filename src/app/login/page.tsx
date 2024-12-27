@@ -1,68 +1,31 @@
-"use client";
-
 import Image from "../../../node_modules/next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import Overlay from "../../components/Overlay";
+import { login } from "@/actions/auth.actions";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const { setSession } = useAuth();
-  const router = useRouter();
 
-  const handleLogin = async (event: React.MouseEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoginError("");
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setLoginError(data.error || "Error desconocido al inciar sesión");
-        openWrongPasswordModal();
-        return;
-      }
-      setSession(data);
-
-      // router.push("/");
-    } catch (error) {
-      setLoginError("Error al conectar con el servidor. Intenta nuevamente.");
-      openWrongPasswordModal();
-    }
-  };
 
   // FORGOT PASSWORD MODAL
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const handleForgotPasswordClick = () => {
-    setShowForgotPasswordModal(true);
-  };
-  const closeForgotModal = () => {
-    setShowForgotPasswordModal(false);
-  };
-  const forgotPasswordModalTitle = "¿Olvidaste tu contraseña?";
-  const forgotPasswordModalBody =
-    "Ponte contacto con el administrador para restablecer tu contraseña.";
+  // const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  // const handleForgotPasswordClick = () => {
+  //   setShowForgotPasswordModal(true);
+  // };
+  // const closeForgotModal = () => {
+  //   setShowForgotPasswordModal(false);
+  // };
+  // const forgotPasswordModalTitle = "¿Olvidaste tu contraseña?";
+  // const forgotPasswordModalBody =
+  //   "Ponte contacto con el administrador para restablecer tu contraseña.";
 
   // WRONG PASSWORD MODAL
-  const [showWrongPasswordModal, setShowWrongPasswordModal] = useState(false);
-  const openWrongPasswordModal = () => {
-    setShowWrongPasswordModal(true);
-  };
-  const closeWronPasswordModal = () => {
-    setShowWrongPasswordModal(false);
-  };
-  const wrongPasswordModalTitle = "Error al iniciar sesión";
+  // const [showWrongPasswordModal, setShowWrongPasswordModal] = useState(false);
+  // const openWrongPasswordModal = () => {
+  //   setShowWrongPasswordModal(true);
+  // };
+  // const closeWronPasswordModal = () => {
+  //   setShowWrongPasswordModal(false);
+  // };
+  // const wrongPasswordModalTitle = "Error al iniciar sesión";
 
   return (
     <>
@@ -82,7 +45,7 @@ export default function Login() {
         </div>
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleLogin} method="POST">
+          <form className="space-y-6" action={login}>
             <div>
               <label
                 htmlFor="email"
@@ -96,8 +59,8 @@ export default function Login() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  // value={email}
+                  // onChange={(e) => setEmail(e.target.value)}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 />
@@ -114,7 +77,7 @@ export default function Login() {
                 </label>
                 <div className="text-sm">
                   <a
-                    onClick={handleForgotPasswordClick}
+                    // onClick={handleForgotPasswordClick}
                     className="font-semibold text-blue-700 hover:text-blue-500"
                   >
                     ¿Olvidaste tu contraseña?
@@ -125,10 +88,10 @@ export default function Login() {
                 <input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
+                  // value={password}
+                  // onChange={(e) => {
+                  //   setPassword(e.target.value);
+                  // }}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 />
@@ -145,7 +108,7 @@ export default function Login() {
             </div>
           </form>
         </div>
-        <Overlay
+        {/* <Overlay
           open={showForgotPasswordModal}
           onClose={closeForgotModal}
           title={forgotPasswordModalTitle}
@@ -156,7 +119,7 @@ export default function Login() {
           onClose={closeWronPasswordModal}
           title={wrongPasswordModalTitle}
           body={loginError}
-        />
+        /> */}
       </div>
     </>
   );

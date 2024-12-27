@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
 import AuthController from "@/controllers/auth.controller";
+import { useAuth } from "@/context/AuthContext";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
+  const { setSession } = useAuth();
 
   try {
     const result = await AuthController.login(email, password);
-    if ("error" in result) {
-      return NextResponse.json({ error: result.error }, { status: 401 });
-    }
+    console.log("aqui");
+    
+    if (!result) throw new Error("Error al iniciar sesión");
+    console.log(result);
+    
+
     const { token, user } = result;
     if (typeof token !== "string" || !token) {
       throw new Error("El token no es válido no no está definido");
@@ -21,8 +26,13 @@ export async function POST(req: Request) {
       sameSite: "strict",
       maxAge: 60 * 60 * 24,
     });
+    const context = {
+      user,
+      isLoggedIn: true,
+    };
+    setSession(context);
 
-    return response;
+    return result;
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },

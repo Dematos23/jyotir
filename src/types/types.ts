@@ -79,8 +79,9 @@ export interface SelectValue {
 }
 
 export interface Session {
-  token: string;
+  // token: string;
   user: SessionUser;
+  isLoggedIn: boolean;
 }
 
 export type LoginContextProviderProps = {

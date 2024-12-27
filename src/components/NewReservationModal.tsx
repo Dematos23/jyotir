@@ -10,7 +10,7 @@ import {
   Client,
   SelectValue,
 } from "@/types/types";
-import { getClients } from "@/services/clients.service";
+import { getClients } from "@/services/client.service";
 import { postReservation } from "@/services/reservations.service";
 import { getExternos } from "@/services/users.service";
 import Select from "react-tailwindcss-select";
@@ -21,8 +21,8 @@ export default function NewReservationModal({
   onClose,
   open,
   updateParent,
-  //   onSuccess,
-}: {
+}: //   onSuccess,
+{
   onClose: () => void;
   open: boolean;
   updateParent: () => void;

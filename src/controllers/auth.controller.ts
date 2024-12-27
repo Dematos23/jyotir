@@ -1,11 +1,9 @@
 import AuthService from "@/services/auth.service";
 
-class AuthController {
+export default class AuthController {
   static async login(email: string, password: string) {
     try {
-      const res = AuthService.login(email, password);
-
-      return res;
+      return AuthService.login(email, password);
     } catch (error) {
       if (error instanceof Error) {
         return { error: error.message };
@@ -14,5 +12,3 @@ class AuthController {
     }
   }
 }
-
-export default AuthController;

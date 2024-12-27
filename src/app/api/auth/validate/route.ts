@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       };
     };
 
-    if (!decoded || !decoded) {
+    if (!decoded) {
       throw new Error("Datos de usuario faltantes en el token");
     }
 

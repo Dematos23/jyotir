@@ -1,12 +1,6 @@
-"use client";
-
 import Image from "next/image";
 
-type LoadingProps = {
-  loading: boolean;
-};
-
-export default function Loading({ loading }: LoadingProps) {
+export default function Loading() {
   return (
     <div className="fixed inset-0 flex justify-center items-center">
       <div className="flex flex-col items-center">

@@ -7,7 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import Nav from "../components/Nav";
 
 export const metadata: Metadata = {
-  title: "Veddy",
+  title: "Jyotir",
   description: "Gestor de citas",
 };
 
