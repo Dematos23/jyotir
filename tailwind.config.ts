@@ -21,11 +21,6 @@ const config: Config = {
   variants: {
     scrollbar: ["dark"],
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("flowbite/plugin"),
-    require("tailwind-scrollbar-hide"),
-    require("preline/plugin"),
-  ],
+  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar-hide")],
 };
 export default config;

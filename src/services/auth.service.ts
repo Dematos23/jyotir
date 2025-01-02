@@ -1,7 +1,7 @@
 import findUser from "@/utils/findUser";
 import prisma from "@/utils/prisma";
 import passVerify from "@/middlewares/passVerify";
-import jwToken from "@/utils/jwToken";
+import {encrypt} from "@/utils/jwToken";
 
 export default class AuthService {
   static async login(email: string, password: string) {
@@ -19,7 +19,8 @@ export default class AuthService {
         role: foundUser.role,
       };
 
-      const token = jwToken(user);
+      const token = encrypt(user);
+      
       return { token, user };
     } catch (error) {
       if (error instanceof Error) {

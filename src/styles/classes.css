@@ -20,3 +20,25 @@
   flex-basis: 49%;
   padding: 1rem;
 }
+
+.user-transition {
+  transition: all 0.1s ease-out; /* Animación para entrada */
+  transform: scale(0.95); /* Escala inicial */
+  opacity: 0; /* Opacidad inicial */
+}
+
+.user-transition-active {
+  transform: scale(1); /* Escala final */
+  opacity: 1; /* Opacidad final */
+}
+
+.user-transition-exit {
+  transition: all 0.075s ease-in; /* Animación para salida */
+  transform: scale(1); /* Escala inicial para salida */
+  opacity: 1; /* Opacidad inicial para salida */
+}
+
+.user-transition-exit-active {
+  transform: scale(0.95); /* Escala final para salida */
+  opacity: 0; /* Opacidad final para salida */
+}

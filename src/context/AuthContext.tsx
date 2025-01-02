@@ -9,7 +9,6 @@ import {
 } from "react";
 import { Session } from "@/types/types";
 import { initialSession } from "@/types/initialStates";
-import { AuthActions } from "@/actions/auth.actions";
 
 interface AuthContextProps {
   session: Session;
@@ -39,9 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     fetchSession();
-    // const user = AuthData.validateToken();
-    // user ? setSession(user) throw new Error("Sin token");
-    
   }, []);
 
   return (

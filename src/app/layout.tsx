@@ -3,8 +3,8 @@ import "./globals.css";
 import "../styles/loading.css";
 import "../styles/homeLogo.css";
 import "../styles/classes.css";
+import Nav from "@/components/Nav";
 import { AuthProvider } from "@/context/AuthContext";
-import Nav from "../components/Nav";
 
 export const metadata: Metadata = {
   title: "Jyotir",
@@ -18,12 +18,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>
+      <AuthProvider>
+        <body>
+          {/* <NavOld /> */}
           <Nav />
-          <div className="mt-20">{children}</div>
-        </AuthProvider>
-      </body>
+          <div className="mt-20"></div>
+        </body>
+      </AuthProvider>
     </html>
   );
 }

@@ -20,13 +20,6 @@ export interface NewUser {
   password: string;
 }
 
-export interface SessionUser {
-  name: string;
-  lastname: string;
-  spiritualName: string | undefined;
-  role: string;
-}
-
 export interface OverlayProps {
   onClose: () => void;
   open: boolean;
@@ -78,8 +71,14 @@ export interface SelectValue {
   label: string;
 }
 
+export interface SessionUser {
+  name: string;
+  lastname: string;
+  spiritualName: string | null;
+  role: string;
+}
+
 export interface Session {
-  // token: string;
   user: SessionUser;
   isLoggedIn: boolean;
 }

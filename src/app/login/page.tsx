@@ -1,10 +1,11 @@
+// "use client"
+
+import getCurrentUser from "@/utils/getCurrentUser";
 import Image from "../../../node_modules/next/image";
 import Overlay from "../../components/Overlay";
 import { login } from "@/actions/auth.actions";
 
 export default function Login() {
-
-
   // FORGOT PASSWORD MODAL
   // const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   // const handleForgotPasswordClick = () => {
@@ -55,12 +56,9 @@ export default function Login() {
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  // value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 />
@@ -86,12 +84,8 @@ export default function Login() {
               </div>
               <div className="mt-2">
                 <input
-                  id="password"
+                  name="password"
                   type="password"
-                  // value={password}
-                  // onChange={(e) => {
-                  //   setPassword(e.target.value);
-                  // }}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 />

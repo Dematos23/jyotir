@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-function jwToken(json: object) {
+export function encrypt(json: object) {
   if (!process.env.JWT_SECRET) {
     throw new Error("Falta JWT_SECRET");
   }
@@ -13,4 +13,15 @@ function jwToken(json: object) {
   return token;
 }
 
-export default jwToken;
+export function decrypt(token: string) {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("Falta JWT_SECRET");
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded;
+  } catch (error) {
+    throw new Error("Token inválido");
+  }
+  
+}
